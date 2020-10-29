@@ -4,10 +4,11 @@ import { navigate } from "gatsby"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button } from 'react-bootstrap';
 
-import { handleLogin, isLoggedIn } from "../services/auth"
+import { handleRegister } from "../services/register"
 
-class Login extends React.Component {
+class Register extends React.Component {
   state = {
+    name: ``,
     email: ``,
     password: ``,
   }
@@ -20,24 +21,29 @@ class Login extends React.Component {
 
   handleSubmit = async event => {
     event.preventDefault()
-    return await handleLogin(this.state);
+    return await handleRegister(this.state);
   }
 
   render() {
-    if (isLoggedIn()) {
-      navigate(`/app/profile`)
-    }
 
     return (
       <>
-        <h1>Log in</h1>  
+        <h1>Register your account</h1>
         <Form
           method="post"
           onSubmit={async event => {
             await this.handleSubmit(event)
-            navigate(`/app/profile`)
-          }}        
+            navigate(`/app/login`)
+          }}      
         >
+          <Form.Group controlId="formBasicName">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="text" placeholder="Enter name" 
+              name="name" 
+              onChange={this.handleUpdate} 
+            />
+          </Form.Group>
+
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control type="email" placeholder="Enter email" 
@@ -54,8 +60,18 @@ class Login extends React.Component {
               onChange={this.handleUpdate}            
             />
           </Form.Group>
+
+          <Form.Group controlId="formBasicRepeatPassword">
+            <Form.Label>Repeat Password</Form.Label>
+            <Form.Control type="password" placeholder="Repeat password"
+              type="password"
+              name="re-password"
+              onChange={this.handleUpdate}            
+            />
+          </Form.Group>
+
           <Button variant="primary" type="submit">
-            Log in
+            Register
           </Button>
         </Form>
       </>
@@ -63,4 +79,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+export default Register

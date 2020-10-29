@@ -6,6 +6,8 @@
  */
 
 import React from "react"
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Container } from 'react-bootstrap';
 
 import NavBar from "./nav-bar"
 
@@ -30,22 +32,16 @@ const Layout = ({ children }) => {
     <>
       <NavBar />
       <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
-      >
+      <Container>
         <main>{children}</main>
         <footer style={{
           marginTop: `2rem`
         }}>
-          © {new Date().getFullYear()}, Built with
+          © {new Date().getFullYear()}, Developed by
           {` `}
-          <a href="https://www.gatsbyjs.com">Gatsby</a>
+          <a href="https://www.toannotes.com" target="_blank">Toan Nguyen</a>
         </footer>
-      </div>
+      </Container>
     </>
   )
 }

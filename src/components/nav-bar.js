@@ -20,9 +20,11 @@ export default function NavBar() {
     >
       <span>{greetingMessage}</span>
       <nav>
-        <Link to="/" style={{ marginRight: `1.45rem` }}>Home</Link>
+        <Link to="/app/register" style={{ marginRight: `1.45rem` }}>Register</Link>
         {isLoggedIn() ? (
             <>  
+                <Link to="/app/create-post" style={{ marginRight: `1.45rem` }}>Create post</Link>
+                <Link to="/app/posts" style={{ marginRight: `1.45rem` }}>Posts</Link>
                 <Link to="/app/profile" style={{ marginRight: `1.45rem` }}>Profile</Link>  
                 <a
                     href="/"
