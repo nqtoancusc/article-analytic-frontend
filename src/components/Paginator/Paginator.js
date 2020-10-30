@@ -11,6 +11,13 @@ const paginator = props => (
           Previous
         </button>
       )}
+
+      {Array.from({ length: props.lastPage }, (_, index) => (
+        <button className="paginator__control" onClick={() => props.onPage(index + 1)}>
+          {index + 1}
+        </button>
+      ))}
+
       {props.currentPage < props.lastPage && (
         <button className="paginator__control" onClick={props.onNext}>
           Next

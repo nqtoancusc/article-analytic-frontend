@@ -1,5 +1,6 @@
 import React from "react"
 import { navigate } from "gatsby"
+import moment from 'moment'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Row, Col } from 'react-bootstrap';
@@ -12,6 +13,7 @@ class Posts extends React.Component {
     isEditing: false,
     posts: [],
     totalPosts: 0,
+    postsPerPage: 2,
     editPost: null,
     status: '',
     postPage: 1,
@@ -86,6 +88,55 @@ class Posts extends React.Component {
     }
   };
 
+  loadPostsPerPage = async page => {
+    try {
+      this.setState({ postsLoading: true, posts: [] });
+      this.setState({ postPage: page });
+      const graphqlQuery = {
+        query: `      
+          {
+            posts(page: ${page}) {
+              posts {
+                _id
+                title
+                content
+                creator {
+                  name
+                }
+                createdAt
+              }
+              totalPosts
+            }
+          }
+        `
+      };
+      const userToken = getUserToken();
+      const response = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + userToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(graphqlQuery)
+      });
+      const resultData = await response.json();
+      this.setState({
+        posts: resultData.data.posts.posts.map(post => {
+          return {
+            ...post,
+            imagePath: post.imageUrl
+          };
+        }),
+        totalPosts: resultData.data.posts.totalPosts,
+        postsLoading: false
+      });
+    } catch(err) {
+      console.log(err.message);
+      // Log out if authentication token expiry
+      logout(() => navigate(`/app/login`));
+    }
+  };
+
   render() {
     return (
       <>
@@ -97,13 +148,14 @@ class Posts extends React.Component {
               <Paginator
                 onPrevious={this.loadPosts.bind(this, 'previous')}
                 onNext={this.loadPosts.bind(this, 'next')}
-                lastPage={Math.ceil(this.state.totalPosts / 2)}
+                onPage={this.loadPostsPerPage}
+                lastPage={Math.ceil(this.state.totalPosts / this.state.postsPerPage)}
                 currentPage={this.state.postPage}
               >
                 {this.state.posts.map(post => (
                   <Row>
                     <Col xs={12} md={6}>{post.title}</Col>
-                    <Col xs={12} md={6}>{post.createdAt}</Col>
+                    <Col xs={12} md={6}>{moment(post.createdAt).local().format(`DD.MM.YYYY`)}</Col>
                   </Row>
                 ))}
               </Paginator>
